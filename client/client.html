@@ -5,29 +5,33 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
-    const handleResponse = async (response) => {
-      const content = document.querySelector('#content');
-      
-      switch(response.status) {
+    const handleStatus = (statusCode) => {
+      switch(statusCode) {
         case 200:
-          content.innerHTML = `<b>Success</b>`;
+          return `<b>Success</b>`;
           break;
         case 201:
-          content.innerHTML = '<b>Created</b>';
+          return '<b>Created</b>';
           break;
         case 204:
-          content.innerHTML = '<b>Updated (No Content)</b>';
+          return '<b>Updated</b>';
           return;
         case 400:
-          content.innerHTML = `<b>Bad Request</b>`;
+          return `<b>Bad Request</b>`;
           break;
         case 404:
-          content.innerHTML = `<b>The page you are looking for was not found</b>`;
+          return `<b>The page you are looking for was not found</b>`;
           break;
         default: 
-          content.innerHTML = `Error code not implemented by client.`;
+          return `Error code not implemented by client.`;
           break;
       }
+    }
+
+    const handlePostResponse = async (response) => {
+      const content = document.querySelector('#content');
+      
+      content.innerHTML = handleStatus(response.statusCode);
 
       // parse response to json
       let obj = await response.json();
@@ -37,6 +41,28 @@
         content.innerHTML += `<p>${obj.message}</p>`
       }
     };
+
+    const handleGetHeadResponse = (response) => {
+      console.log(response);
+
+      let content = document.getElementById('content');
+
+      content.innerHTML = handleStatus(response.statusCode);
+
+      response.text().then((resText) => {
+        const messageElement = document.createElement('p');
+        messageElement.textContent = resText;
+
+        // log for debugging
+        console.log(resText);
+
+        // parse JSON
+        const parsedResponse = JSON.parse(resText);
+        messageElement.textContent = `Message: ${parsedResponse.message}`;
+
+        content.appendChild(messageElement);
+      });
+    }
 
     const sendPost = async (nameForm) => {
       // get input fields
@@ -63,8 +89,17 @@
 
 
       //Once we have a response, handle it.
-      handleResponse(response);
+      handlePostResponse(response);
     };
+
+    const sendFetch = async () => {
+        const url = document.getElementById('urlField').value;
+        const method = document.getElementById('methodSelect').value;
+
+        const response = await fetch(url, {method: method});
+
+        handleGetHeadResponse(response);
+      }
 
     const init = () => {
       const nameForm = document.querySelector('#nameForm');
@@ -75,18 +110,6 @@
         sendPost(nameForm);
         return false;
       }
-
-      const sendFetch = async () => {
-        const url = document.getElementById('urlField').value;
-        const method = document.getElementById('methodSelect').value;
-
-        const response = await fetch(url, {
-        method: method,
-
-      });
-      }
-
-      handleResponse(response);
       
       nameForm.addEventListener('submit', addUser);
       userForm.addEventListener('submit', sendFetch);

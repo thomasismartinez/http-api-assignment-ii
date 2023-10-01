@@ -16,24 +16,33 @@ const respondJSONMeta = (request, response, status) => {
 
 // return user object as json
 const getUsers = (request, response, method) => {
-  console.log(method);
+  // if GET request
   if (method === 'GET') {
-    const responseJSON = { users };
+    const responseJSON = {
+      message: users,
+    };
 
     respondJSON(request, response, 200, responseJSON);
-  } else {
-    respondJSONMeta(request, response, 200, responseJSON);
+  }
+  // otherwise it is a HEAD request
+  else {
+    respondJSONMeta(request, response, 200);
   }
 };
 
 const notReal = (request, response, method) => {
-  console.log(method);
+  // if GET request
   if (method === 'GET') {
-    const responseJSON = { notRealError };
+    const responseJSON = {
+      id: 'notFound',
+      message: notRealError,
+    };
 
     respondJSON(request, response, 404, responseJSON);
-  } else {
-    respondJSONMeta(request, response, 404, responseJSON);
+  }
+  // otherwise it is a HEAD request
+  else {
+    respondJSONMeta(request, response, 404);
   }
 };
 
@@ -46,6 +55,7 @@ const addUser = (request, response, body) => {
 
   // if a name and age are not given
   if (!body.name || !body.age) {
+    // give failure id
     responseJSON.id = 'addUserMissingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
