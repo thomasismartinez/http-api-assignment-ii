@@ -1,5 +1,4 @@
 const users = {};
-const notRealError = 'Not Real';
 
 // responds with json object
 const respondJSON = (request, response, status, object) => {
@@ -19,7 +18,7 @@ const getUsers = (request, response, method) => {
   // if GET request
   if (method === 'GET') {
     const responseJSON = {
-      message: users,
+      message: JSON.stringify(users),
     };
 
     respondJSON(request, response, 200, responseJSON);
@@ -35,7 +34,7 @@ const notReal = (request, response, method) => {
   if (method === 'GET') {
     const responseJSON = {
       id: 'notFound',
-      message: notRealError,
+      message: 'Message: The page you are looking for was not found',
     };
 
     respondJSON(request, response, 404, responseJSON);
@@ -50,7 +49,7 @@ const addUser = (request, response, body) => {
   console.log(body);
   // default response
   const responseJSON = {
-    message: 'Name and age are both required',
+    message: 'Message: Name and age are both required',
   };
 
   // if a name and age are not given
@@ -76,7 +75,7 @@ const addUser = (request, response, body) => {
 
   // return 201
   if (responseCode === 201) {
-    responseJSON.message = 'Created Succesfully';
+    responseJSON.message = 'Message: Created Succesfully';
     return respondJSON(request, response, responseCode, responseJSON);
   }
 

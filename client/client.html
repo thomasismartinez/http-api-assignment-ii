@@ -14,13 +14,13 @@
           return '<b>Created</b>';
           break;
         case 204:
-          return '<b>Updated</b>';
+          return '<b>Updated (No Content)</b>';
           return;
         case 400:
           return `<b>Bad Request</b>`;
           break;
         case 404:
-          return `<b>The page you are looking for was not found</b>`;
+          return `<b>Not Found</b>`;
           break;
         default: 
           return `Error code not implemented by client.`;
@@ -29,9 +29,12 @@
     }
 
     const handlePostResponse = async (response) => {
+      console.log(response);
+
       const content = document.querySelector('#content');
       
-      content.innerHTML = handleStatus(response.statusCode);
+      content.innerHTML = handleStatus(response.status);
+      //content.innerHTML = response.statusText;
 
       // parse response to json
       let obj = await response.json();
@@ -44,21 +47,23 @@
 
     const handleGetHeadResponse = (response) => {
       console.log(response);
+      
+      const content = document.getElementById('content');
 
-      let content = document.getElementById('content');
+      content.innerHTML = handleStatus(response.status);
+      //content.innerHTML = response.statusText;
 
-      content.innerHTML = handleStatus(response.statusCode);
-
+      console.log(response);
       response.text().then((resText) => {
         const messageElement = document.createElement('p');
         messageElement.textContent = resText;
 
         // log for debugging
-        console.log(resText);
+        //console.log(resText);
 
         // parse JSON
         const parsedResponse = JSON.parse(resText);
-        messageElement.textContent = `Message: ${parsedResponse.message}`;
+        messageElement.textContent = parsedResponse.message;
 
         content.appendChild(messageElement);
       });
@@ -92,7 +97,9 @@
       handlePostResponse(response);
     };
 
-    const sendFetch = async () => {
+    const sendFetch = async (e) => {
+        e.preventDefault();
+
         const url = document.getElementById('urlField').value;
         const method = document.getElementById('methodSelect').value;
 

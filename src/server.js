@@ -55,14 +55,10 @@ const urlStruct = {
 const onRequest = (request, response) => {
   // first we have to parse information from the url
   const parsedUrl = url.parse(request.url);
-  // const params = query.parse(parsedUrl.query);
-  // const acceptedTypes = request.headers.accept.split(',');
 
   if (urlStruct[request.method][parsedUrl.pathname]) {
     return urlStruct[request.method][parsedUrl.pathname](request, response, request.method);
   }
-
-  // return urlStruct.notFound(request, response, acceptedTypes);
 
   return urlStruct[request.method]['/'];
 };
