@@ -17,14 +17,10 @@ const respondJSONMeta = (request, response, status) => {
 const getUsers = (request, response, method) => {
   // if GET request
   if (method === 'GET') {
-    const responseJSON = {
-      message: JSON.stringify(users),
-    };
+    const responseJSON = { message: JSON.stringify(users) };
 
     respondJSON(request, response, 200, responseJSON);
-  }
-  // otherwise it is a HEAD request
-  else {
+  } else { // otherwise it is a HEAD request
     respondJSONMeta(request, response, 200);
   }
 };
@@ -38,9 +34,7 @@ const notReal = (request, response, method) => {
     };
 
     respondJSON(request, response, 404, responseJSON);
-  }
-  // otherwise it is a HEAD request
-  else {
+  } else { // otherwise it is a HEAD request
     respondJSONMeta(request, response, 404);
   }
 };
@@ -48,9 +42,7 @@ const notReal = (request, response, method) => {
 const addUser = (request, response, body) => {
   console.log(body);
   // default response
-  const responseJSON = {
-    message: 'Message: Name and age are both required',
-  };
+  const responseJSON = { message: 'Message: Name and age are both required' };
 
   // if a name and age are not given
   if (!body.name || !body.age) {
@@ -64,8 +56,8 @@ const addUser = (request, response, body) => {
   // if this user does not exist yet
   if (!users[body.name]) {
     responseCode = 201; // adding new user
-    users[body.name] = {}; // create new user with given name
-  }
+    users[body.name] = {};
+  }// create new user with given name
 
   // set fields
   users[body.name].name = body.name;
